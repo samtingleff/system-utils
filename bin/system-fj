@@ -1,0 +1,67 @@
+#!/usr/bin/env perl
+#
+# Fork/join helper to execute multiple system commands concurrently
+#
+# Usage:
+#  system-fj "echo hello, world" "sleep 10" "echo goodbye, world"
+#
+package ThreadWatcher;
+use strict;
+use threads;
+
+MAIN:
+  my $fj = ThreadWatcher->new();
+  foreach my $arg (@ARGV) {
+    $fj->add_thread(sub { return system($arg); });
+  }
+  my $master = $fj->start();
+  my $result = $master->join();
+  die "system-fj failed with $result" if $result;
+
+sub new {
+  my $class = shift;
+  my $self = {
+    threads => []
+  };
+  bless $self, $class;
+  return $self;
+}
+
+sub DESTROY { }
+
+sub add_thread {
+  my ( $self, $thread_func ) = @_;
+  push(@{$self->{threads}}, $thread_func);
+}
+
+sub start {
+  my ( $self ) = @_;
+  my $watch_code = sub {
+    my @active_threads = ();
+    my $retval = 0;
+    foreach my $thread (@{$self->{threads}}) {
+      my $t = threads->create(sub { return $self->_watch($thread); });
+      push (@active_threads, $t);
+    }
+    foreach my $t (@active_threads) {
+      my $z = $t->join();
+      $retval += $z;
+    }
+    return $retval;
+  };
+  my $master_thread = threads->create($watch_code);
+  return $master_thread;
+}
+
+sub _watch {
+  my ( $self, $code ) = @_;
+  my $x = eval {
+    &$code;
+  };
+  if (($@) or ($x)) {
+    warn $@;
+  }
+  return $x;
+}
+
+1;
