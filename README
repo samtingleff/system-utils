@@ -1,0 +1,5 @@
+A set of bach/perl scripts for common tasks.
+
+system-fj: simple script to execute multiple system commands in parallel. Example:
+ system-fj "sleep 10; echo 'sleep 10 completed'" "echo 'hello world'" "sleep 5; echo 'sleep 5 completed'"
+
