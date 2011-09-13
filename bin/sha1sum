@@ -8,7 +8,10 @@ opts, args = getopt.getopt(sys.argv, "", [])
 for arg in args[1:]:
     h = hashlib.sha1()
     f = open(arg)
-    h.update(f.read())
+    bytes = f.read(4096)
+    while bytes:
+        h.update(bytes)
+        bytes = f.read(4096)
     hash = h.hexdigest()
     f.close() 
     print "%s: %s" % (arg, hash)
