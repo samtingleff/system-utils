@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+import hashlib
+import getopt
+import sys
+
+opts, args = getopt.getopt(sys.argv, "", [])
+
+for arg in args[1:]:
+    h = hashlib.sha1()
+    f = open(arg)
+    h.update(f.read())
+    hash = h.hexdigest()
+    f.close() 
+    print "%s: %s" % (arg, hash)
