@@ -1,0 +1,2 @@
+#!/bin/sh
+perl -MList::Util=shuffle -e 'print shuffle(<>);'
