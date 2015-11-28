@@ -6,3 +6,5 @@ system-fj: simple script to execute multiple system commands in parallel. Exampl
 random-mac: create a random mac address for Xen domU hosts.
 
 sha1sum: calculate file sha1sum
+
+shuffle: random sort stdin
