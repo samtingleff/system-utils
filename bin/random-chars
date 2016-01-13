@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+import string
+import sys
+import random
+
+try:
+    count = int(sys.argv[1])
+except IndexError:
+    print "Error: no argument provided"
+    print "Usage: random-chars {count} (example: random-chars 32)"
+    exit(1)
+except ValueError:
+    print "Error: non-integer argument provided"
+    print "Usage: random-chars {count} (example: random-chars 32)"
+    exit(1)
+
+print ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(count))
